@@ -1,7 +1,13 @@
-import express from 'express';
+import express, { Application, Request, Response} from 'express';
 
-const app: express.Application = express();
+const app: Application = express();
 
-app.get('/', (req: Request, res: Response): Promise<Response> => res.json({ message: 'Hello!' }));
+function endpoint(req: Request, res: Response): Response {
+  const message: string = 'oi';
+
+  return res.json({ message });
+}
+
+app.get('/', endpoint);
 
 app.listen(3000, () => console.log('Server online at port: 3000'));
