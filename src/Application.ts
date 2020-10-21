@@ -2,6 +2,7 @@ import { Server } from '@overnightjs/core';
 import express from 'express';
 import morgan from 'morgan';
 import Secrets from './controllers/Secrets';
+import EnvConfigs from './lib/EnvConfigs';
 
 export class Application extends Server {
 
@@ -22,7 +23,9 @@ export class Application extends Server {
     super.addControllers([secrets]);
   }
 
-  public start(port: Number) {
+  public start() {
+    const port = EnvConfigs.getAppPort();
+
     this.app.listen(port, () => console.log(`Server Online at port: ${port}`));
   }
 }
