@@ -4,6 +4,8 @@ import morgan from 'morgan';
 import Secrets from './controllers/Secrets';
 import EnvConfigs from './lib/EnvConfigs';
 
+import './database';
+
 export class Application extends Server {
 
   constructor() {
