@@ -1,13 +1,11 @@
 {
-  "synchronize": true,
-  "logging": false,
   "entities": [
-     "src/database/entity/**/*.ts"
+    "./src/models/*.ts"
   ],
   "migrations": [
-     "src/database/migration/**/*.ts"
+    "./src/database/migrations/*.ts"
   ],
-  "subscribers": [
-     "src/database/subscriber/**/*.ts"
-  ]
+  "cli": {
+    "migrationsDir": "./src/database/migrations"
+  }
 }
