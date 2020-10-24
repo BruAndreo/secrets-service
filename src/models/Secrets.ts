@@ -18,10 +18,10 @@ export default class Secrets {
   @Column({ type: 'boolean', default: true })
   active: Boolean;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp with time zone' })
   updatedAt: Date;
 
 }
