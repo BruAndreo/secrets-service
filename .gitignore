@@ -117,3 +117,6 @@ dist
 
 # Dist folder
 dist/
+
+# Certificates folder
+certificates/
