@@ -6,4 +6,24 @@ export default class EnvConfigs {
     return Number(port);
   }
 
+  public static getPublicKeyPath(): string {
+    const publicKey: string | undefined = process.env.PUBLIC_KEY;
+
+    if (!publicKey) {
+      throw new Error('Configuration error');
+    }
+
+    return publicKey;
+  }
+
+  public static getPrivateKeyPath(): string {
+    const privateKey: string | undefined = process.env.PRIVATE_KEY;
+
+    if (!privateKey) {
+      throw new Error('Configuration error');
+    }
+
+    return privateKey;
+  }
+
 }
