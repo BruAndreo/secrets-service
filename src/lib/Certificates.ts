@@ -21,8 +21,8 @@ export class Certificates {
     return encrypted.toString('base64');
   }
 
-  public decrypt(data: string): string {
-    const decrypted = crypto.publicDecrypt(this.publicKey, Buffer.from(data, 'base64'));
+  public decrypt(data: String): string {
+    const decrypted = crypto.publicDecrypt(this.publicKey, Buffer.from(data.toString(), 'base64'));
 
     return decrypted.toString('utf-8');
   }

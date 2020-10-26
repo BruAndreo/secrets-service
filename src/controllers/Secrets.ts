@@ -1,31 +1,49 @@
 import { Request, Response } from 'express';
 import { Controller, Delete, Get, Post, Put } from '@overnightjs/core';
-import { Certificates } from '../lib/Certificates';
+import SecretsDomain from '../domain/SecretsDomain';
 
 @Controller('secrets')
 export default class Secrets {
 
   @Post()
-  public newSecret(req: Request, res: Response): Response {
-    const certificates = new Certificates();
+  public async newSecret(req: Request, res: Response): Promise<Response> {
+    try {
+      const { name, username, password } = req.body;
 
-    const encrypt = certificates.crypt('brunolino2026@gmail.com');
-    console.log(encrypt);
+      const secretsDomain = new SecretsDomain();
+      const id = await secretsDomain.newSecret(name, username, password);
 
-    const decrypt = certificates.decrypt(encrypt);
-    console.log(decrypt);
-
-    return res.json({ message: 'Hello Secrets' });
+      return res.status(201).json({ idSecret: id });
+    } catch (e) {
+      return res.status(500).json({ message: e.message })
+    }
   }
 
   @Get()
-  public getSecrets(req: Request, res: Response): Response {
-    return res.json({ message: 'Hello Secrets GET' });
+  public async getSecrets(req: Request, res: Response): Promise<Response> {
+    try {
+      const secretsDomain = new SecretsDomain();
+      const secrets = await secretsDomain.getAllSecrets();
+
+      return res.json({ secrets });
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
   }
 
   @Get(':id')
-  public getSecretById(req: Request, res: Response): Response {
-    return res.json({ message: `Hello ID ${req.params.id}` });
+  public async getSecretById(req: Request, res: Response): Promise<Response> {
+    try {
+      const id = Number.parseInt(req.params.id);
+      const secretsDomain = new SecretsDomain();
+
+      const secret = await secretsDomain.getSecretById(id);
+
+      return res.json({ secret });
+
+    } catch (e) {
+      return res.status(500).json({ message: e.message });
+    }
   }
 
   @Put(':id')
