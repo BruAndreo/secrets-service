@@ -27,10 +27,11 @@ export default class SecretsDomain {
     const model = getCustomRepository(SecretsRepo);
     const certificates = new Certificates();
 
-    const secrets = await model.find();
+    const secrets = await model.find({ active: true });
 
     return secrets.map(secret => ({
       id: secret.id,
+      name: secret.name,
       username: certificates.decrypt(secret.login),
       createdAt: secret.createdAt
     }));
@@ -54,6 +55,32 @@ export default class SecretsDomain {
       createdAt: secret.createdAt,
       updatedAt: secret.updatedAt
     };
+  }
+
+  public async updateSecret(id: Number, name: string, username: string, password: string, active: boolean): Promise<Object> {
+    const model = getCustomRepository(SecretsRepo);
+    const certificates = new Certificates();
+
+    let secret = await model.update({ id }, {
+      name: name,
+      login: certificates.crypt(username),
+      password: certificates.crypt(password),
+      active: active
+    });
+
+    if (!secret.affected) {
+      throw new Error('Error on update secret');
+    }
+
+    return await this.getSecretById(id);
+  }
+
+  public async inactiveSecrets(id: Number): Promise<Boolean> {
+    const model = getCustomRepository(SecretsRepo);
+
+    const secret = await model.update({ id }, { active: false });
+
+    return !!secret;
   }
 
 }
