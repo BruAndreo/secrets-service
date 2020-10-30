@@ -15,6 +15,10 @@ export default class Secrets {
     return Number.parseInt(req.params.id);
   }
 
+  private handlerError(e: Error, res: Response): Response {
+    return res.status(500).json({ message: e.message });
+  }
+
   @Post()
   public async newSecret(req: Request, res: Response): Promise<Response> {
     try {
@@ -24,7 +28,7 @@ export default class Secrets {
 
       return res.status(201).json({ idSecret: id });
     } catch (e) {
-      return res.status(500).json({ message: e.message })
+      return this.handlerError(e, res);
     }
   }
 
@@ -35,7 +39,7 @@ export default class Secrets {
 
       return res.json({ secrets });
     } catch (e) {
-      return res.status(500).json({ message: e.message });
+      return this.handlerError(e, res);
     }
   }
 
@@ -48,7 +52,7 @@ export default class Secrets {
       return res.json({ secret });
 
     } catch (e) {
-      return res.status(500).json({ message: e.message });
+      return this.handlerError(e, res);
     }
   }
 
@@ -62,7 +66,7 @@ export default class Secrets {
 
       return res.status(200).json({ secret });
     } catch (e) {
-      return res.status(500).json({ message: e.message })
+      return this.handlerError(e, res);
     }
   }
 
@@ -75,7 +79,7 @@ export default class Secrets {
 
       return res.status(200).json({ success });
     } catch (e) {
-      return res.status(500).json({ message: e.message })
+      return this.handlerError(e, res);
     }
   }
 }
