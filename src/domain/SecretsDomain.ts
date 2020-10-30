@@ -1,8 +1,14 @@
 import { getCustomRepository } from "typeorm";
-import { Certificates } from "../lib/Certificates";
+import { Crypter } from "../lib/Crypter";
 import SecretsRepo from "../repositorys/SecretsRepo";
 
 export default class SecretsDomain {
+
+  private crypter: Crypter;
+
+  constructor() {
+    this.crypter = new Crypter();
+  }
 
   public async newSecret(name: string,  username: string, password: string): Promise<Number> {
     if (!password) {
@@ -10,12 +16,11 @@ export default class SecretsDomain {
     }
 
     const model = getCustomRepository(SecretsRepo);
-    const certificates = new Certificates();
 
     const secret = model.create({
       name: name,
-      login: certificates.crypt(username),
-      password: certificates.crypt(password)
+      login: this.crypter.crypt(username),
+      password: this.crypter.crypt(password)
     });
 
     await model.save(secret);
@@ -25,21 +30,19 @@ export default class SecretsDomain {
 
   public async getAllSecrets(): Promise<Object> {
     const model = getCustomRepository(SecretsRepo);
-    const certificates = new Certificates();
 
     const secrets = await model.find({ active: true });
 
     return secrets.map(secret => ({
       id: secret.id,
       name: secret.name,
-      username: certificates.decrypt(secret.login),
+      username: this.crypter.decrypt(secret.login),
       createdAt: secret.createdAt
     }));
   }
 
   public async getSecretById(id: Number): Promise<Object> {
     const model = getCustomRepository(SecretsRepo);
-    const certificates = new Certificates();
 
     const secret = await model.findOne({ id });
 
@@ -49,8 +52,8 @@ export default class SecretsDomain {
 
     return {
       id: secret.id,
-      username: certificates.decrypt(secret.login),
-      password: certificates.decrypt(secret.password),
+      username: this.crypter.decrypt(secret.login),
+      password: this.crypter.decrypt(secret.password),
       active: secret.active,
       createdAt: secret.createdAt,
       updatedAt: secret.updatedAt
@@ -59,12 +62,11 @@ export default class SecretsDomain {
 
   public async updateSecret(id: Number, name: string, username: string, password: string, active: boolean): Promise<Object> {
     const model = getCustomRepository(SecretsRepo);
-    const certificates = new Certificates();
 
     let secret = await model.update({ id }, {
       name: name,
-      login: certificates.crypt(username),
-      password: certificates.crypt(password),
+      login: this.crypter.crypt(username),
+      password: this.crypter.crypt(password),
       active: active
     });
 

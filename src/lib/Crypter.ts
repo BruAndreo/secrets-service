@@ -3,7 +3,7 @@ import { Buffer } from 'buffer';
 import fs from 'fs';
 import EnvConfigs from './EnvConfigs';
 
-export class Certificates {
+export class Crypter {
   private publicKey: string;
   private privateKey: string;
 
